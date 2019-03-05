@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 require('dotenv').config();
 
-const config = require('../config');
+const config = require('./config/');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || `mongodb://localhost:27017/${config.DATABASE_NAME}`);
+mongoose.connect(process.env.MONGODB_URI || `mongodb://localhost:27017/${config.DATABASE_NAME}`, {useNewUrlParser: true});
 
 const app = require('./app');
 const port = process.env.PORT || 3000;
