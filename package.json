@@ -1,0 +1,22 @@
+{
+  "name": "practiceapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node start.js",
+    "start-watch": "nodemon start.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.17",
+    "nonce": "^1.0.4",
+    "shopify-node-api": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
