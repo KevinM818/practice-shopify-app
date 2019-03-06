@@ -1,3 +1,3 @@
 module.exports = {
-  APP_URI: 'https://51e2903c.ngrok.io',
+  APP_URI: 'https://b855a584.ngrok.io',
 };
