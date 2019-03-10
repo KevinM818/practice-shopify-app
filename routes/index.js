@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
     	return res.redirect(`/install/?${query}`);
   	}
 
-  	res.send('Hello Success, verify now');
+  	return res.render('index.html');
 
   } catch (e) {
   	console.log('Error finding shop in index', e);

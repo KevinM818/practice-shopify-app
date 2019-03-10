@@ -8,7 +8,7 @@ const Shop = require('../models/shop');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-	const shopName = `${req.query.shop}.myshopify.com`;
+	const shopName = req.query.shop;
 	const state = nonce();
 	const shopAPI = new Shopify({
 		shop: shopName,
@@ -50,8 +50,8 @@ router.get('/callback', async (req, res) => {
 
 			try {
 				shop.accessToken = data.access_token;
-				shop.save();
-        res.redirect(`https://${shop.shopifyDomain}/admin/apps/${config.APP_STORE_NAME}`);
+				await shop.save();
+        res.redirect(`https://${shop.shopifyDomain}/admin/apps/`);
 			} catch (e) {
 				console.log('Error updating shop after getting token after callback', e);
   			res.status(400).send(e);

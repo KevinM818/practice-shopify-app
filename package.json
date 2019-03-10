@@ -5,18 +5,24 @@
   "main": "index.js",
   "scripts": {
     "start": "node start.js",
-    "start-watch": "nodemon start.js"
+    "start-watch": "nodemon start.js",
+    "dev": "watchify -vd -p browserify-hmr -t vueify -e src/main.js -o public/javascripts/bundle.js & node start.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^6.2.0",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "mongoose": "^5.4.17",
     "nonce": "^1.0.4",
-    "shopify-node-api": "^1.10.0"
+    "shopify-node-api": "^1.10.0",
+    "vue": "^2.6.8"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10"
+    "browserify-hmr": "^0.3.7",
+    "nodemon": "^1.18.10",
+    "vueify": "^9.4.1",
+    "watchify": "^3.11.1"
   }
 }
