@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node start.js",
     "start-watch": "nodemon start.js",
-    "dev": "watchify -vd -p browserify-hmr -t vueify -e src/main.js -o public/javascripts/bundle.js & node start.js"
+    "build-watch": "watchify -vd -p browserify-hmr -t vueify -e src/main.js -o public/javascripts/bundle.js",
+    "dev": "concurrently --kill-others \"npm run build-watch\" \"npm run start\""
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "browserify-hmr": "^0.3.7",
+    "concurrently": "^4.1.0",
     "nodemon": "^1.18.10",
     "vueify": "^9.4.1",
     "watchify": "^3.11.1"
