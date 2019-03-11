@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   const query = Object.keys(req.query).map((key) => `${key}=${req.query[key]}`).join('&');
-  
+  console.log(query);
   if (!req.query.shop) {
 		return res.send('Missing shop parameter. Please add ?shop=your-development-shop to your request');
   }
