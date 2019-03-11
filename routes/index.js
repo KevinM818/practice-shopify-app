@@ -1,12 +1,14 @@
 const express = require('express');
 
+const config = require('./../config/');
+const { verifyOAuth } = require('./../helpers/');
 const Shop = require('./../models/shop');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
   const query = Object.keys(req.query).map((key) => `${key}=${req.query[key]}`).join('&');
-  console.log(query);
+
   if (!req.query.shop) {
 		return res.send('Missing shop parameter. Please add ?shop=your-development-shop to your request');
   }
@@ -17,7 +19,13 @@ router.get('/', async (req, res) => {
     	return res.redirect(`/install/?${query}`);
   	}
 
-  	return res.render('index.html');
+    if (verifyOAuth(req.query)) {
+    	return res.render('index', {
+        title: config.APP_NAME,
+        apiKey: config.SHOPIFY_API_KEY,
+        shopOrigin: shop.shopifyDomain
+      });
+    }
 
   } catch (e) {
   	console.log('Error finding shop in index', e);

@@ -4,6 +4,7 @@ const nonce = require('nonce')();
 
 const config = require('../config');
 const Shop = require('../models/shop');
+const AppConfig = require('../models/config');
 
 const router = express.Router();
 
@@ -21,7 +22,9 @@ router.get('/', async (req, res) => {
   const redirectURI = shopAPI.buildAuthURL();
   try {
   	const shop = new Shop({shopifyDomain: shopName, nonce: state});
+  	const appConfig = new AppConfig({shopifyDomain: shopName});
   	await shop.save();
+  	await appConfig.save();
 		res.redirect(redirectURI);
   } catch (e) {
   	console.log('Error installing on shop', e);
@@ -46,7 +49,6 @@ router.get('/callback', async (req, res) => {
 				console.log('Error exchanging token on callback', e);
 				return res.status(400).send(e);
 			}
-			console.log('got data', data);
 
 			try {
 				shop.accessToken = data.access_token;

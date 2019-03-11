@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= title %></title>
+  	<script src="https://cdn.shopify.com/s/assets/external/app.js"></script>
+  	<script type="text/javascript">
+  		window.apiKey = '<%= apiKey %>';
+  		window.shopOrigin = '<%= shopOrigin %>';
+
+  		ShopifyApp.init({
+  			apiKey: window.apiKey,
+  			shopOrigin: window.shopOrigin
+  		});
+  	</script>
+</head>
+<body>
+	<div id="app"></div>
+	<script type="text/javascript" src="./javascripts/bundle.js"></script>
+</body>
+</html>
