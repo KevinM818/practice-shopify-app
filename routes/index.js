@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   const query = Object.keys(req.query).map((key) => `${key}=${req.query[key]}`).join('&');
+  const queryHmac = req.query.hmac;
 
   if (!req.query.shop) {
 		return res.send('Missing shop parameter. Please add ?shop=your-development-shop to your request');
@@ -20,6 +21,9 @@ router.get('/', async (req, res) => {
   	}
 
     if (verifyOAuth(req.query)) {
+      res.setHeader('X-Shopify-Shop-Domain', shop.shopifyDomain);
+      res.setHeader('X-Shopify-Hmac', queryHmac);
+
     	return res.render('index', {
         title: config.APP_NAME,
         apiKey: config.SHOPIFY_API_KEY,

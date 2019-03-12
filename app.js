@@ -3,6 +3,7 @@ var path = require('path');
 
 const index = require('./routes/index');
 const install = require('./routes/install');
+const configApi = require('./routes/api/config');
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/install', install);
+app.use('/config', configApi);
 
 module.exports = app;
