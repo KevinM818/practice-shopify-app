@@ -61,7 +61,16 @@ router.patch('/:id', auth, async (req, res) => {
 });
 
 router.delete('/:id', auth, async (req, res) => {
-
+  try {
+    const option = await Option.findOneAndRemove({_id: req.params.id}).exec();
+    if (!option) {
+      return res.status(404).send();
+    }
+    res.send({option});
+  } catch(e) {
+    console.log('Error deleting option DELETE', e);
+    res.status(400).send(e);
+  }
 });
 
 module.exports = router;
