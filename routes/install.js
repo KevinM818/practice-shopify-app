@@ -1,7 +1,6 @@
 const express = require('express');
 const Shopify = require('shopify-node-api');
 const nonce = require('nonce')();
-
 const config = require('../config');
 const Shop = require('../models/shop');
 const AppConfig = require('../models/config');
@@ -34,7 +33,6 @@ router.get('/', async (req, res) => {
 
 router.get('/callback', async (req, res) => {
 	const params = req.query;
-
 	try {
 		let shop = await Shop.findOne({shopifyDomain: params.shop}).exec();
 		const shopAPI = new Shopify({
@@ -43,13 +41,11 @@ router.get('/callback', async (req, res) => {
 			shopify_shared_secret: config.SHOPIFY_SHARED_SECRET,
 			nonce: shop.nonce
 		});
-
 		shopAPI.exchange_temporary_token(params, async (err, data) => {
 			if (err) {
 				console.log('Error exchanging token on callback', e);
 				return res.status(400).send(e);
 			}
-
 			try {
 				shop.accessToken = data.access_token;
 				await shop.save();
@@ -58,14 +54,11 @@ router.get('/callback', async (req, res) => {
 				console.log('Error updating shop after getting token after callback', e);
   			res.status(400).send(e);
 			}
-
 		});
-
 	} catch (e) {
 		console.log('Error getting shop on callback', e);
   	res.status(400).send(e);
 	}
-
 });
 
 module.exports = router;

@@ -1,10 +1,9 @@
 const express = require('express');
+const { auth } = require('./../../middleware/auth');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  console.log('test');
-  console.log(req.get('X-Shopify-Domain'));
+router.get('/', auth, (req, res) => {
   res.send('user config here');
 });
 

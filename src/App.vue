@@ -4,17 +4,26 @@
 		<div class="appInnerWrapper">
 			<dashboard></dashboard>
 		</div>
+		<button @click="getConfig()">Test get config</button>
 	</div>
 </template>
 
 <script type="text/javascript">
-	let Navigation = require('./components/Navigation.vue');
-	let Dashboard = require('./components/Dashboard.vue');
+	const Navigation = require('./components/Navigation.vue');
+	const Dashboard = require('./components/Dashboard.vue');
+	const { getData } = require('./utils/utils.js');
 
 	module.exports = {
 		components: {
 			Navigation,
 			Dashboard
+		},
+		methods: {
+			getConfig() {
+				getData('/config', (res) => {
+					console.log('success', res);
+				})
+			}
 		}
 	};
 </script>
