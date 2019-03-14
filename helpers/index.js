@@ -1,6 +1,9 @@
 const ShopifyAPI = require('shopify-node-api');
 const config = require('../config');
 const crypto = require('crypto');
+const Option = require('./../models/option');
+const Product = require('./../models/product');
+const Collection = require('./../models/collection');
 
 const openSession = shop => {
 	return new ShopifyAPI({
@@ -15,7 +18,6 @@ const verifyOAuth = query => {
 	if (!query.hmac) {
 		return false;
 	}
-
 	const hmac = query.hmac; 
 	delete query.hmac;
   const sortedQuery = Object.keys(query).map(key => `${key}=${Array(query[key]).join(',')}`).sort().join('&');
@@ -23,11 +25,23 @@ const verifyOAuth = query => {
   if (calculatedSignature === hmac) {
   	return true;
   }
-
   return false;
+}
+
+const checkAndUpdateCollections = async shopifyDomain => {
+  try {
+    let savedOptionCollections = [];
+    const options = await Option.find({shopifyDomain}).exec();
+    options.map(opt => opt.collections.forEach((coll) => savedOptionCollections.push(coll)));
+    console.log(savedOptionCollections);
+    return savedOptionCollections;
+  } catch(e) {
+    console.log('Error updating collections', e);
+  }
 }
 
 module.exports = {
 	openSession,
-	verifyOAuth
+	verifyOAuth,
+  checkAndUpdateCollections
 }
