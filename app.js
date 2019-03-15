@@ -6,6 +6,7 @@ const install = require('./routes/install');
 const load = require('./routes/api/load');
 const configApi = require('./routes/api/config');
 const optionsApi = require('./routes/api/options');
+const productsApi = require('./routes/api/products');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/install', install);
 app.use('/load', load);
 app.use('/config', configApi);
 app.use('/option', optionsApi);
+app.use('/products', productsApi);
 
 const {checkCollections} = require('./helpers/');
 app.get('/testing', async (req, res) => {
