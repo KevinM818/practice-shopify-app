@@ -21,10 +21,10 @@ app.use('/load', load);
 app.use('/config', configApi);
 app.use('/option', optionsApi);
 
-const {checkAndUpdateCollections} = require('./helpers/');
+const {checkCollections} = require('./helpers/');
 app.get('/testing', async (req, res) => {
-	let test = await checkAndUpdateCollections(req.header('shop'));
-	res.send(test);
+	await checkCollections(req.header('shop'));
+	res.send('success');
 });
 
 

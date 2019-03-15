@@ -28,20 +28,66 @@ const verifyOAuth = query => {
   return false;
 }
 
-const checkAndUpdateCollections = async shopifyDomain => {
+const checkCollections = async shopifyDomain => {
   try {
     let savedOptionCollections = [];
+    let collectionsToSave = [];
+    let collectionsToDelete = [];
     const options = await Option.find({shopifyDomain}).exec();
+    const savedCollections = await Collection.find({shopifyDomain}).exec();
     options.map(opt => opt.collections.forEach((coll) => savedOptionCollections.push(coll)));
-    console.log(savedOptionCollections);
-    return savedOptionCollections;
+    savedCollections.forEach(coll => {
+      if (!savedOptionCollections.find(c => c.collection_id === coll.collection_id)) {
+        collectionsToDelete.push(coll.collection_id);
+      }
+    });
+    savedOptionCollections.forEach(coll => {
+      if (!savedCollections.find(c => c.collection_id === coll.collection_id)) {
+        collectionsToSave.push(coll);
+      }
+    });
+    if (collectionsToDelete.length > 0) {
+      deleteCollectionsAndProducts(collectionsToDelete, shopifyDomain);
+    }
+    if (collectionsToSave.length > 0) {
+      let newCollections = collectionsToSave.map(coll => new Collection({
+        shopifyDomain,
+        collection_id: coll.collection_id,
+        title: coll.title  
+      }))
+      saveCollections(newCollections);
+    }
   } catch(e) {
     console.log('Error updating collections', e);
   }
 }
 
+const saveCollections = async (collections) => {
+  if (collections.length <= 0) {
+    return;
+  }
+  try {
+    let collection = collections.pop();
+    await collection.save();
+    saveCollections(collections);
+  } catch(e) {
+    console.log(`Error saving collection ${collection.title}`, e);
+  }
+}
+
+const deleteCollectionsAndProducts = async (collections, shopifyDomain) => {
+  try {
+    await Collection.deleteMany({shopifyDomain, collection_id: {$in: collections}}).exec();
+    await Product.deleteMany({shopifyDomain, collection_id: {$in: collections}}).exec();
+  } catch(e) {
+    console.log('Error deleting collections or products', e);
+  }
+}
+
+
+
 module.exports = {
 	openSession,
 	verifyOAuth,
-  checkAndUpdateCollections
+  checkCollections
 }

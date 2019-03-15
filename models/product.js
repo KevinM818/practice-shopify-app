@@ -9,7 +9,8 @@ const Product = new mongoose.Schema({
 	title: String,
 	img: String,
 	tags: [String],
-	price: mongoose.Decimal128
+	price: mongoose.Decimal128,
+	publishedAt: Date
 });
 
 module.exports = mongoose.model('Product', Product);
