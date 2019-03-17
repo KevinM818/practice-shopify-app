@@ -8,8 +8,8 @@ router.post('/', auth, async (req, res) => {
 	const option = new Option({
 		shopifyDomain: req.header('shop'),
 		title: req.body.title,
-		collections: req.body.collections,
-		colors: req.body.colors
+		collections: [],
+		colors: []
 	});
 	try {
 		await option.save();
