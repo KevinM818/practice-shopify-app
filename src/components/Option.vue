@@ -112,6 +112,9 @@
         this.optionCollections.splice(index, 1);
       },
       addColor() {
+        if (!this.addColorTitle || !this.addColorValue) {
+          return;
+        }
         this.optionColors.push({title: this.addColorTitle, value: this.addColorValue});
         this.addColorTitle = '';
         this.addColorValue = '';
@@ -129,7 +132,6 @@
         patchData(`/option/${this.$route.params.id}`, data, this.optionSaved);
       },
       optionSaved(res) {
-        console.log(res);
         if (res.statusText == 'OK') {
           this.showSaved = 'show';
           setTimeout(() => this.showSaved = 'hide', 5000);

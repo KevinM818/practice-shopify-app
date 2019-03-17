@@ -23,11 +23,4 @@ app.use('/config', configApi);
 app.use('/option', optionsApi);
 app.use('/products', productsApi);
 
-const {checkCollections} = require('./helpers/');
-app.get('/testing', async (req, res) => {
-	await checkCollections(req.header('shop'));
-	res.send('success');
-});
-
-
 module.exports = app;

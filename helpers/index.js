@@ -1,6 +1,7 @@
 const ShopifyAPI = require('shopify-node-api');
 const config = require('../config');
 const crypto = require('crypto');
+const Shop = require('./../models/shop');
 const Option = require('./../models/option');
 const Product = require('./../models/product');
 const Collection = require('./../models/collection');
@@ -54,7 +55,7 @@ const checkCollections = async shopifyDomain => {
         shopifyDomain,
         collection_id: coll.collection_id,
         title: coll.title  
-      }))
+      }));
       saveCollections(newCollections);
     }
   } catch(e) {
@@ -62,16 +63,57 @@ const checkCollections = async shopifyDomain => {
   }
 }
 
-const saveCollections = async (collections) => {
+const saveCollections = async collections => {
   if (collections.length <= 0) {
     return;
   }
   try {
     let collection = collections.pop();
     await collection.save();
+    getProducts(collection.collection_id, collection.shopifyDomain);
     saveCollections(collections);
   } catch(e) {
     console.log(`Error saving collection ${collection.title}`, e);
+  }
+}
+
+const getProducts = async (collection_id, shopifyDomain) => {
+  try {
+    const shop = await Shop.findOne({shopifyDomain}).exec();
+    openSession(shop).get('/admin/products.json', {collection_id, limit: 250}, (err, data, headers) => {
+      if (err) {
+        return Promise.reject(err);
+      }
+      let newProducts = [];
+      data.products.forEach(prod => newProducts.push(new Product({
+        shopifyDomain,
+        product_id: prod.id,
+        variant_id: prod.variants[0].id,
+        collection_id: collection_id,
+        title: prod.title,
+        img: prod.image.src || '',
+        tags: prod.tags.split(',').map(tag => tag.trim()),
+        price: prod.variants[0].price,
+        publishedAt: prod.published_at,
+        // available: prod.variants[0].available
+      })));
+      saveProducts(newProducts);
+    })
+  } catch(e) {
+    console.log('Error getting products', e)
+  }
+}
+
+const saveProducts = async products => {
+  if (products.length <= 0) {
+    return;
+  }
+  try {
+    let product = products.pop();
+    await product.save();
+    saveProducts(products);
+  } catch(e) {
+    console.log(`Error saving product ${product.title}`, e);
   }
 }
 
