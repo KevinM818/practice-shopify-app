@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
     if (!option) {
       return res.status(404).send();
     }
-    res.send({option});
+    res.send({option: option[0]});
   } catch(e) {
     console.log('Error getting option GET', e);
     res.status(400).send(e);

@@ -6,7 +6,7 @@
       <ul>
         <li v-for="option in options">
           <p>{{ option.title }}</p>
-          <a href="">Edit</a>
+          <router-link :to="{name: 'option', params: {id: option.id}}">Edit</router-link>
           <button @click="removeOption(option.id)">Delete</button>
         </li>
       </ul>
