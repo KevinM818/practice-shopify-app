@@ -22,7 +22,7 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const options = await Option.find({shopifyDomain: req.header('shop')}).exec();
+    const options = await Option.find({shopifyDomain: req.query.shop}).exec();
     res.send({options});
   } catch(e) {
     console.log('Error getting options GET', e);
@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const option = await Option.find({_id: req.params.id}).exec();
+    const option = await Option.find({_id: req.params.id, shopifyDomain: req.query.shop}).exec();
     if (!option) {
       return res.status(404).send();
     }
@@ -45,7 +45,7 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', auth, async (req, res) => {
   try {
-    const option = await Option.findOneAndUpdate({_id: req.params.id}, {$set: {
+    const option = await Option.findOneAndUpdate({_id: req.params.id, shopifyDomain: req.header('shop')}, {$set: {
       title: req.body.title,
       collections: req.body.collections,
       colors: req.body.colors
@@ -62,7 +62,7 @@ router.patch('/:id', auth, async (req, res) => {
 
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const option = await Option.findOneAndRemove({_id: req.params.id}).exec();
+    const option = await Option.findOneAndRemove({_id: req.params.id, shopifyDomain: req.header('shop')}).exec();
     if (!option) {
       return res.status(404).send();
     }

@@ -20,7 +20,8 @@
     "mongoose": "^5.4.17",
     "nonce": "^1.0.4",
     "shopify-node-api": "^1.10.0",
-    "vue": "^2.6.8"
+    "vue": "^2.6.8",
+    "vue-router": "^3.0.2"
   },
   "devDependencies": {
     "browserify-hmr": "^0.3.7",

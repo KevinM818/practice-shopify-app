@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
  	try {
-    let shopConfig = await AppConfig.findOne({shopifyDomain: req.header('shop')}).exec();
+    let shopConfig = await AppConfig.findOne({shopifyDomain: req.query.shop}).exec();
     if (!shopConfig) {
       return res.status(404).send();
     }
