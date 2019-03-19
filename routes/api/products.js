@@ -23,7 +23,9 @@ router.get('/', async (req, res) => {
     if (req.query.colors) {
       findObj.$and.push({tags: {$in: req.query.colors.split(',')}})
     }
+    const allProducts = await Product.find({shopifyDomain: req.query.shop, collection_id: {$in: queryCollections}, publishedAt: {$ne: null}}).exec();
     const products = await Product.find(findObj).exec();
+    let filterArr = [];
     let data = [];
     collections.forEach(coll => data.push({
       title: coll.title,
@@ -35,7 +37,14 @@ router.get('/', async (req, res) => {
       data[index].products.push(prod);
     });
     data.forEach(opt => opt.products = opt.products.slice(0,7));
-    res.send(data);
+    allProducts.forEach(prod => {
+      prod.tags.forEach(tag => {
+        if (tag.indexOf('pattern_') > -1) {
+          filterArr.push(tag);
+        }
+      })
+    });
+    res.send({prodData: data, patternFilters: filterArr.filter((value, index, self) => self.indexOf(value) === index)});
 	} catch(e) {
 		console.log('Error getting products GET', e);
     res.status(400).send(e);
