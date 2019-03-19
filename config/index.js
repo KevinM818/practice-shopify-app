@@ -5,8 +5,8 @@ const development = require('./development');
 const config = {
 	SHOPIFY_API_KEY: process.env.SHOPIFY_API_KEY,
 	SHOPIFY_SHARED_SECRET: process.env.SHOPIFY_SHARED_SECRET,
-	APP_NAME: 'Practice App',
-	APP_STORE_NAME: 'Practice App',
+	APP_NAME: 'Gigi Build a Set',
+	APP_STORE_NAME: 'Gigi Build a Set',
 	APP_SCOPE: 'read_products,write_products,read_inventory,write_inventory,read_checkouts,write_checkouts',
 	DATABASE_NAME: 'practice_app_db'
 }
