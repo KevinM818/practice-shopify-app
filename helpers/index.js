@@ -85,18 +85,24 @@ const getProducts = async (collection_id, shopifyDomain) => {
         return Promise.reject(err);
       }
       let newProducts = [];
-      data.products.forEach(prod => newProducts.push(new Product({
-        shopifyDomain,
-        product_id: prod.id,
-        variant_id: prod.variants[0].id,
-        collection_id: collection_id,
-        title: prod.title,
-        img: prod.image.src || '',
-        tags: prod.tags.split(',').map(tag => tag.trim()),
-        price: prod.variants[0].price,
-        publishedAt: prod.published_at,
-        // available: prod.variants[0].available
-      })));
+      data.products.forEach(prod => {
+        let img = '';
+        if (prod.image) {
+          img = prod.image.src;
+        }
+        newProducts.push(new Product({
+          shopifyDomain,
+          product_id: prod.id,
+          variant_id: prod.variants[0].id,
+          collection_id: collection_id,
+          title: prod.title,
+          img,
+          tags: prod.tags.split(',').map(tag => tag.trim()),
+          price: prod.variants[0].price,
+          publishedAt: prod.published_at,
+          // available: prod.variants[0].available
+        }));
+      })
       saveProducts(newProducts);
     })
   } catch(e) {
