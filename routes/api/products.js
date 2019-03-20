@@ -57,7 +57,8 @@ router.get('/:id', async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let findObj = {
       shopifyDomain: req.query.shop,
-      collection_id: req.params.id
+      collection_id: req.params.id,
+      publishedAt: {$ne: null}
     };
     if (req.query.pattern || req.query.colors) {
       findObj.$and = [];
