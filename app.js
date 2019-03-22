@@ -8,6 +8,7 @@ const load = require('./routes/api/load');
 const configApi = require('./routes/api/config');
 const optionsApi = require('./routes/api/options');
 const productsApi = require('./routes/api/products');
+const buildSetsApi = require('./routes/api/buildSet');
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use('/load', load);
 app.use('/config', configApi);
 app.use('/option', optionsApi);
 app.use('/products', productsApi);
+app.use('/build-set', buildSetsApi);
 
 module.exports = app;
