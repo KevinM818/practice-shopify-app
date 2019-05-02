@@ -2,7 +2,7 @@ const config = require('../config');
 const crypto = require('crypto');
 const Shop = require('./../models/shop');
 
-const auth = async (req, res, next) => {
+const auth = (req, res, next) => {
   const hmac = req.header('hmac');
   const locale = req.header('locale');
   const shop = req.header('shop');

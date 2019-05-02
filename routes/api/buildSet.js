@@ -12,6 +12,9 @@ router.post('/', async (req, res) => {
       product: {
         title: 'Built Set',
         product_type: 'Node Built',
+        images: [{
+          src: 'https://ibb.co/1TgNGMH'
+        }],
         variants: [{
           option1: 'Default Title',
           price: req.body.price
@@ -40,6 +43,15 @@ router.post('/', async (req, res) => {
 	} catch(e) {
 		res.status(400).send('Error building set', e);
 	}
+});
+
+router.get('/', async (req, res) => {
+  try {
+    let sets = await BuildSet.find({shopifyDomain: req.query.shop}).exec();
+    res.send({sets});
+  } catch(e) {
+    res.status(400).send('Error getting sets', e);
+  }
 });
 
 module.exports = router;
