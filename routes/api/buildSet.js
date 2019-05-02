@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
         title: 'Built Set',
         product_type: 'Node Built',
         images: [{
-          src: 'https://ibb.co/1TgNGMH'
+          src: 'https://cdn.shopify.com/s/files/1/1120/6812/files/Gift_Box.png?5644'
         }],
         variants: [{
           option1: 'Default Title',
