@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
     let findObj = {
       shopifyDomain: req.query.shop,
       collection_id: {$in: queryCollections},
-      publishedAt: {$ne: null}
+      publishedAt: {$ne: null},
+      inventory_quantity: {$gt: 0}
     };
     if (req.query.pattern || req.query.colors) {
       findObj.$and = [];
@@ -23,7 +24,7 @@ router.get('/', async (req, res) => {
     if (req.query.colors) {
       findObj.$and.push({tags: {$in: req.query.colors.split(',')}})
     }
-    const allProducts = await Product.find({shopifyDomain: req.query.shop, collection_id: {$in: queryCollections}, publishedAt: {$ne: null}}).exec();
+    const allProducts = await Product.find({shopifyDomain: req.query.shop, collection_id: {$in: queryCollections}, publishedAt: {$ne: null}, inventory_quantity: {$gt: 0}}).exec();
     const products = await Product.find(findObj).exec();
     let filterArr = [];
     let data = [];

@@ -11,7 +11,7 @@ const Product = new mongoose.Schema({
 	tags: [String],
 	price: mongoose.Decimal128,
 	publishedAt: Date,
-	available: Boolean
+	inventory_quantity: Number
 });
 
 module.exports = mongoose.model('Product', Product);

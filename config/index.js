@@ -7,8 +7,9 @@ const config = {
 	SHOPIFY_SHARED_SECRET: process.env.SHOPIFY_SHARED_SECRET,
 	APP_NAME: 'Gigi Build a Set',
 	APP_STORE_NAME: 'Gigi Build a Set',
-	APP_SCOPE: 'read_products,write_products,read_inventory,write_inventory,read_checkouts,write_checkouts',
-	DATABASE_NAME: 'practice_app_db'
+	APP_SCOPE: 'read_products,write_products,read_orders,read_inventory,write_inventory',
+	DATABASE_NAME: 'practice_app_db',
+	WEBHOOKS: ['app/uninstalled','orders/create','collections/delete','products/update','products/delete']
 }
 
 if (env === 'development') {
@@ -16,3 +17,4 @@ if (env === 'development') {
 } else {
   module.exports = Object.assign({}, config, production);
 }
+

@@ -100,7 +100,7 @@ const getProducts = async (collection_id, shopifyDomain) => {
           tags: prod.tags.split(',').map(tag => tag.trim()),
           price: prod.variants[0].price,
           publishedAt: prod.published_at,
-          // available: prod.variants[0].available
+          inventory_quantity: prod.variants[0].inventory_quantity
         }));
       })
       saveProducts(newProducts);
@@ -132,10 +132,25 @@ const deleteCollectionsAndProducts = async (collections, shopifyDomain) => {
   }
 }
 
-
+const buildWebhooks = (webhooks, shop) => {
+  if (webhooks.length <= 0) {return;}
+  let webhookTopic = webhooks.pop();
+  let data = {webhook: {
+    topic: webhookTopic,
+    address: `${config.APP_URI}/webhook/`,
+    format: 'json'
+  }};
+  shop.post('/admin/webhooks.json', data, (err, res, headers) => {
+    if (err) {
+      return console.log(`Error installing ${webhookTopic} webhook`, err);
+    }
+    buildWebhooks(webhooks, shop);
+  });
+}
 
 module.exports = {
 	openSession,
 	verifyOAuth,
-  checkCollections
+  checkCollections,
+  buildWebhooks
 }

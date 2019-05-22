@@ -20,4 +20,35 @@ const auth = (req, res, next) => {
   }
 };
 
-module.exports = {auth}
+const verifyWebhook = (req, res, next) => {
+  let hmac;
+  let data;
+  try {
+    hmac = req.get('X-Shopify-Hmac-Sha256');
+    data = req.body;
+  } catch(e) {
+    res.sendStatus(200);
+  }
+  if (verifyHmac(data, hmac)) {
+    req.topic = req.get('X-Shopify-Topic');
+    req.shop = req.get('X-Shopify-Shop-Domain');
+    req.body = JSON.parse(req.body);
+    return next();
+  }
+  return res.sendStatus(200);
+}
+
+const verifyHmac = (data, hmac) => {
+  if (!hmac || !data) {
+    return false;
+  } 
+  const sharedSecret = config.SHOPIFY_SHARED_SECRET;
+  const calculatedSignature = crypto.createHmac('sha256', sharedSecret).update(data, 'utf8', 'hex').digest('base64');
+  return calculatedSignature === hmac;
+}
+
+
+module.exports = {
+  auth,
+  verifyWebhook
+}
