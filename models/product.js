@@ -5,7 +5,7 @@ const Product = new mongoose.Schema({
 	shopifyDomain: String,
 	product_id: Number,
 	variant_id: Number,
-	collection_id: Number,
+	collection_ids: [Number],
 	title: String,
 	img: String,
 	tags: [String],

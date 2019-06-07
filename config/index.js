@@ -9,7 +9,7 @@ const config = {
 	APP_STORE_NAME: 'Gigi Build a Set',
 	APP_SCOPE: 'read_products,write_products,read_orders,read_inventory,write_inventory',
 	DATABASE_NAME: 'practice_app_db',
-	WEBHOOKS: ['app/uninstalled','orders/create','collections/delete','products/update','products/delete']
+	WEBHOOKS: ['app/uninstalled','orders/create','collections/delete','collections/update','products/update','products/delete','products/create']
 }
 
 if (env === 'development') {

@@ -77,6 +77,8 @@ const saveCollections = async collections => {
   }
 }
 
+// TODO: Function to index products for an individual collection, mabye include in saveCollections
+
 const getProducts = async (collection_id, shopifyDomain) => {
   try {
     const shop = await Shop.findOne({shopifyDomain}).exec();

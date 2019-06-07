@@ -5,6 +5,7 @@ const config = require('../config');
 const Shop = require('../models/shop');
 const AppConfig = require('../models/config');
 const {openSession, buildWebhooks} = require('./../helpers/');
+const {fetchProducts} = require ('./../helpers/sync');
 
 const router = express.Router();
 
@@ -50,7 +51,9 @@ router.get('/callback', async (req, res) => {
 			try {
 				shop.accessToken = data.access_token;
 				await shop.save();
-				await buildWebhooks(config.WEBHOOKS, openSession(shop));
+				const shopify = openSession(shop);
+				await buildWebhooks(config.WEBHOOKS, shopify);
+				fetchProducts(shop.shopifyDomain, shopify, 1);
         res.redirect(`https://${shop.shopifyDomain}/admin/apps/`);
 			} catch (e) {
 				console.log('Error updating shop after getting token after callback', e);

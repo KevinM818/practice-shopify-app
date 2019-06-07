@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const Collection = new mongoose.Schema({
 	collection_id: Number,
-	title: String
+	title: String,
+	order: Number
 });
 
 const Color = new mongoose.Schema({
