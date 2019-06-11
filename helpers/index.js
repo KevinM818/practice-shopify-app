@@ -56,21 +56,112 @@ const checkCollections = async shopifyDomain => {
         if (err) {return console.log(`Error getting collections`, err);}
         saveCollections(data.smart_collections, shopifyDomain);
       });
-
-
     }
   } catch(e) {
     console.log('Error updating collections', e);
   }
 }
 
-const saveCollections = (collections, shopifyDomain) => {
-  console.log(shopifyDomain);
-  console.log(collections);
+const getCollectionProperties = (shopifyDomain, collection) => {
+  return {
+    shopifyDomain,
+    collection_id: collection.id,
+    title: collection.title,
+    disjunctive: collection.disjunctive,
+    rules: collection.rules
+  };
 }
 
-const indexProducts = (collections) => {
+const saveCollections = async (collections, shopifyDomain) => {
+  if (collections.length <= 0) {return;}
+  let popCollection = collections.pop();
+  try {
+    let properties = getCollectionProperties(shopifyDomain, popCollection);
+    let collection = new Collection(properties);
+    await collection.save();
+    await indexProducts(collection, shopifyDomain);
+    saveCollections(collections, shopifyDomain);
+  } catch(e) {console.log(`Error saving collection ${popCollection.title}`, e);}
+}
 
+const indexProducts = async (collection, shopifyDomain) => {
+  try {
+    let removeCollection = [];
+    let addCollection = [];
+    let collId = collection.collection_id;
+    let query = getRuleQuery(collection.disjunctive, collection.rules);
+    query.shopifyDomain = shopifyDomain;
+    const currentProducts = await Product.find({shopifyDomain, collection_ids: collId}).exec();
+    const newProducts = await Product.find(query).exec();
+    currentProducts.forEach(prod => {
+      if (newProducts.indexOf(prod) == -1) {
+        removeCollection.push(prod);
+      }
+    });  
+    addCollection = newProducts.filter(prod => prod.collection_ids.indexOf(collId) == -1);
+    if (removeCollection.length > 0) {
+      editCollectionIds(removeCollection, true, collId, shopifyDomain);
+    } 
+    if (addCollection.length > 0) {
+      editCollectionIds(addCollection, false, collId, shopifyDomain);
+    }
+  } catch(e) {console.log('Error indexing products', e);}
+}
+
+const editCollectionIds = async (products, remove, id, shopifyDomain) => {
+  if (products.length <= 0) {return;}
+  let product = products.pop();
+  prodCollArr = product.collection_ids;
+  if (remove) {
+
+  } else {
+    prodCollArr.push(id);
+  }
+  try {
+    await Product.findOneAndUpdate({shopifyDomain, product_id: product.product_id}, {$set: {collection_ids: prodCollArr}});
+    editCollectionIds(products, remove, id, shopifyDomain);
+  } catch(e) {console.log(`Error editing product collection ids ${product.title}`, e);}
+}
+
+const getRuleQuery = (disjunctive, rules) => {
+  let query = [];
+  rules.forEach(rule => query.push(getField(rule)));
+  return disjunctive ? {$or: query} : {$and: query};
+}
+
+const getField = rule => {
+  let obj;
+  switch (rule.column) {
+    case 'tag':
+      obj = {tags: getCondition(rule.relation, rule.condition)};
+      break;
+    case 'title':
+      obj = {title: getCondition(rule.relation, rule.condition)};
+      break;
+    case 'variant_price':
+      obj = {price: getCondition(rule.relation, rule.condition)};
+      break;
+    case 'variant_inventory':
+      obj = {inventory_quantity: getCondition(rule.relation, rule.condition)};
+      break;
+  }
+  return obj;
+}
+
+const getCondition = (relation, condition) => {
+  let val;
+  switch (relation) {
+    case 'equals':
+      val = condition;
+      break;
+    case 'greater_than':
+      val = {$gt: condition};
+      break;
+    case 'less_than':
+      val = {$lt: condition};
+      break;
+  }
+  return val;
 }
 
 const deleteCollections = async (collections, shopifyDomain) => {
