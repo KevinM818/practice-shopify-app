@@ -44,7 +44,7 @@ const checkCollections = async shopifyDomain => {
     });
     savedOptionCollections.forEach(coll => {
       if (!savedCollections.find(c => c.collection_id === coll.collection_id)) {
-        collectionsToSave.push(coll);
+        collectionsToSave.push(coll.collection_id);
       }
     });
     if (collectionsToDelete.length > 0) {
@@ -52,25 +52,21 @@ const checkCollections = async shopifyDomain => {
     }
     if (collectionsToSave.length > 0) {
       let shop = await Shop.findOne({shopifyDomain}).exec();
-      let newCollections = collectionsToSave.map(coll => new Collection({
-        shopifyDomain,
-        collection_id: coll.collection_id,
-        title: coll.title  
-      }));
-      saveCollections(newCollections, openSession(shop), shopifyDomain);
+      openSession(shop).get('/admin/api/2019-04/smart_collections.json', {ids: collectionsToSave.join(',')}, (err, data, headers) => {
+        if (err) {return console.log(`Error getting collections`, err);}
+        saveCollections(data.smart_collections, shopifyDomain);
+      });
+
+
     }
   } catch(e) {
     console.log('Error updating collections', e);
   }
 }
 
-const saveCollections = (collections, shop, shopifyDomain) => {
-  const ids = collections.map(coll => coll.collection_id).join(',');
-  shop.get('/admin/api/2019-04/smart_collections.json', {ids}, (err, data, headers) => {
-    if (err) {return console.log(`Error getting collections`, err);}
-    console.log(data);
-  });
-
+const saveCollections = (collections, shopifyDomain) => {
+  console.log(shopifyDomain);
+  console.log(collections);
 }
 
 const indexProducts = (collections) => {
