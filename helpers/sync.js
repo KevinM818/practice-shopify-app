@@ -5,8 +5,9 @@ const fetchProducts = (shopName, shop, page, allProducts = []) => {
 	shop.get('/admin/products.json', {limit: 250, page}, (err, data, headers) => {
 		if (err) {return console.log('Error fetching products', err);}
 		allProducts = [...allProducts, ...data.products];
+		console.log(`Fetched products ${page}`);
 		if (data.products.length === 250) {
-			fetchProducts(shopName, shop, page + 1, allProducts);
+			setTimeout(() => fetchProducts(shopName, shop, page + 1, allProducts), 500);
 		} else {
 			return saveProducts(shopName, allProducts);
 		}

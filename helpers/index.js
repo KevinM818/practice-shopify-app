@@ -48,87 +48,38 @@ const checkCollections = async shopifyDomain => {
       }
     });
     if (collectionsToDelete.length > 0) {
-      deleteCollectionsAndProducts(collectionsToDelete, shopifyDomain);
+      deleteCollections(collectionsToDelete, shopifyDomain);
     }
     if (collectionsToSave.length > 0) {
+      let shop = await Shop.findOne({shopifyDomain}).exec();
       let newCollections = collectionsToSave.map(coll => new Collection({
         shopifyDomain,
         collection_id: coll.collection_id,
         title: coll.title  
       }));
-      saveCollections(newCollections);
+      saveCollections(newCollections, openSession(shop), shopifyDomain);
     }
   } catch(e) {
     console.log('Error updating collections', e);
   }
 }
 
-const saveCollections = async collections => {
-  if (collections.length <= 0) {
-    return;
-  }
-  try {
-    let collection = collections.pop();
-    await collection.save();
-    getProducts(collection.collection_id, collection.shopifyDomain);
-    saveCollections(collections);
-  } catch(e) {
-    console.log(`Error saving collection ${collection.title}`, e);
-  }
+const saveCollections = (collections, shop, shopifyDomain) => {
+  const ids = collections.map(coll => coll.collection_id).join(',');
+  shop.get('/admin/api/2019-04/smart_collections.json', {ids}, (err, data, headers) => {
+    if (err) {return console.log(`Error getting collections`, err);}
+    console.log(data);
+  });
+
 }
 
-// TODO: Function to index products for an individual collection, mabye include in saveCollections
+const indexProducts = (collections) => {
 
-const getProducts = async (collection_id, shopifyDomain) => {
-  try {
-    const shop = await Shop.findOne({shopifyDomain}).exec();
-    openSession(shop).get('/admin/products.json', {collection_id, limit: 250}, (err, data, headers) => {
-      if (err) {
-        return Promise.reject(err);
-      }
-      let newProducts = [];
-      data.products.forEach(prod => {
-        let img = '';
-        if (prod.image) {
-          img = prod.image.src;
-        }
-        newProducts.push(new Product({
-          shopifyDomain,
-          product_id: prod.id,
-          variant_id: prod.variants[0].id,
-          collection_id: collection_id,
-          title: prod.title,
-          img,
-          tags: prod.tags.split(',').map(tag => tag.trim()),
-          price: prod.variants[0].price,
-          publishedAt: prod.published_at,
-          inventory_quantity: prod.variants[0].inventory_quantity
-        }));
-      })
-      saveProducts(newProducts);
-    })
-  } catch(e) {
-    console.log('Error getting products', e)
-  }
 }
 
-const saveProducts = async products => {
-  if (products.length <= 0) {
-    return;
-  }
-  try {
-    let product = products.pop();
-    await product.save();
-    saveProducts(products);
-  } catch(e) {
-    console.log(`Error saving product ${product.title}`, e);
-  }
-}
-
-const deleteCollectionsAndProducts = async (collections, shopifyDomain) => {
+const deleteCollections = async (collections, shopifyDomain) => {
   try {
     await Collection.deleteMany({shopifyDomain, collection_id: {$in: collections}}).exec();
-    await Product.deleteMany({shopifyDomain, collection_id: {$in: collections}}).exec();
   } catch(e) {
     console.log('Error deleting collections or products', e);
   }
