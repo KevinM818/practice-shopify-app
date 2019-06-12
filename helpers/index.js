@@ -113,7 +113,7 @@ const editCollectionIds = async (products, remove, id, shopifyDomain) => {
   let product = products.pop();
   prodCollArr = product.collection_ids;
   if (remove) {
-
+    prodCollArr.splice(prodCollArr.indexOf(id), 1);
   } else {
     prodCollArr.push(id);
   }
