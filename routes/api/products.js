@@ -8,10 +8,10 @@ router.get('/', async (req, res) => {
 	try {
     const query = req.query.collections.split(',');
     const queryCollections = query.map(id => parseInt(id));
-    const collections = await Collection.find({shopifyDomain: req.query.shop, collection_id: queryCollections}).exec();
+    const collections = await Collection.find({shopifyDomain: req.query.shop, collection_id: {$in: queryCollections}}).exec();
     let findObj = {
       shopifyDomain: req.query.shop,
-      collection_id: {$in: queryCollections},
+      collection_ids: {$in: queryCollections},
       publishedAt: {$ne: null},
       inventory_quantity: {$gt: 0}
     };
@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
     if (req.query.colors) {
       findObj.$and.push({tags: {$in: req.query.colors.split(',')}})
     }
-    const allProducts = await Product.find({shopifyDomain: req.query.shop, collection_id: {$in: queryCollections}, publishedAt: {$ne: null}, inventory_quantity: {$gt: 0}}).exec();
+    const allProducts = await Product.find({shopifyDomain: req.query.shop, collection_ids: {$in: queryCollections}, publishedAt: {$ne: null}, inventory_quantity: {$gt: 0}}).exec();
     const products = await Product.find(findObj).exec();
     let filterArr = [];
     let data = [];
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
       products: []
     }));
     products.forEach(prod => {
-      let index = data.indexOf(data.find(opt => opt.collection_id == prod.collection_id));
+      let index = data.indexOf(opt => prod.collection_ids.indexOf(opt.collection_id) > -1);
       data[index].products.push(prod);
     });
     data.forEach(opt => opt.products = opt.products.slice(0,7));
@@ -58,7 +58,7 @@ router.get('/:id', async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let findObj = {
       shopifyDomain: req.query.shop,
-      collection_id: req.params.id,
+      collection_ids: req.params.id,
       publishedAt: {$ne: null}
     };
     if (req.query.pattern || req.query.colors) {
