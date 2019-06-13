@@ -167,6 +167,12 @@ const getCondition = (relation, condition) => {
 const deleteCollections = async (collections, shopifyDomain) => {
   try {
     await Collection.deleteMany({shopifyDomain, collection_id: {$in: collections}}).exec();
+    collections.forEach(async coll => {
+      try {
+        let products = await Product.find({shopifyDomain, collection_ids: coll}).exec();
+        await editCollectionIds(products, true, coll, shopifyDomain);
+      } catch (e) {console.log('Error getting products in delete collections', e);}
+    });
   } catch(e) {
     console.log('Error deleting collections or products', e);
   }
