@@ -35,6 +35,7 @@ const getProperties = (shopName, product) => {
 		tags: product.tags.split(',').map(tag => tag.trim()),
 		price: product.variants[0].price,
 		publishedAt: product.published_at,
+		created_at: product.created_at,
 		inventory_quantity: product.variants[0].inventory_quantity
 	};
 }

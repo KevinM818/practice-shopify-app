@@ -11,6 +11,7 @@ const Product = new mongoose.Schema({
 	tags: [String],
 	price: mongoose.Decimal128,
 	publishedAt: Date,
+	created_at: Date,
 	inventory_quantity: Number
 });
 
