@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     if (req.query.colors) {
       findObj.$or = [];
       req.query.colors.split(',').forEach(color => findObj.$or.push({
-        tags: {$elemMatch: {$regex: color, $options: 'i'}}
+        tags: {$elemMatch: {$regex: color.trim(), $options: 'i'}}
       }));
     }
     const allProducts = await Product.find({shopifyDomain, collection_ids: {$in: queryCollections}, publishedAt: {$ne: null}, inventory_quantity: {$gt: 0}}).exec();
@@ -70,7 +70,7 @@ router.get('/:id', async (req, res) => {
     if (req.query.colors) {
       findObj.$or = [];
       req.query.colors.split(',').forEach(color => findObj.$or.push({
-        tags: {$elemMatch: {$regex: color, $options: 'i'}}
+        tags: {$elemMatch: {$regex: color.trim(), $options: 'i'}}
       }));
     }
     const products = await Product.find(findObj).sort({created_at: -1}).skip((page - 1) * pageSize).limit(pageSize).exec();
