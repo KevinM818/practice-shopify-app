@@ -10,10 +10,15 @@
       <div class="Option__collections">
         <h3>Collections</h3>
         <ul>
-          <li v-for="collection in optionCollections">
-            <p>{{ collection.title }}</p>
-            <button @click="removeCollection(collection.collection_id)">Remove</button>
-          </li>
+          <draggable v-model="optionCollections" ghost-class="ghost">
+            <transition-group type="transition" name="flip-list">
+              <li class="sortable" v-for="collection in optionCollections" :id="collection.collection_id" :key="collection.collection_id">
+                <img src="https://img.icons8.com/metro/26/000000/drag-reorder.png">
+                <p>{{ collection.title }}</p>
+                <button @click="removeCollection(collection.collection_id)">Remove</button>
+              </li>
+            </transition-group>
+          </draggable>
         </ul>
       </div>
       <div class="Option__addCollections">
@@ -30,9 +35,11 @@
         <h3>Colors</h3>
         <ul>
           <li v-for="color in optionColors">
-            <span v-bind:style="{height: '30px', width: '30px', display: 'inline-block', 'background-color': color.value}"></span>
-            <p>{{ color.title }}</p>
-            <p>{{ color.value }}</p>
+            <span v-bind:style="{'background-color': color.value}"></span>
+            <div class="colorInfo">
+              <p>Color: {{ color.title }}</p>
+              <p>Value: {{ color.value }}</p>
+            </div>
             <button @click="removeColor(color.value)">Remove</button>
           </li>
         </ul>
@@ -49,7 +56,7 @@
           <button @click="addColor()">Add</button>
         </div>
       </div>
-      <button @click="saveOption()">Save</button>
+      <button @click="saveOption()" class="optSaveBtn">Save</button>
 		</div>
     <div class="savedNotification" :class="showSaved">Saved</div>
 	</div>
@@ -58,6 +65,7 @@
 <script type="text/javascript">
   const {getData, patchData} = require('./../utils/utils.js');
   const axios = require('axios/dist/axios.min.js');
+  const draggable = require('vuedraggable/dist/vuedraggable.common.js');
 
 	module.exports = {
 		data() {
@@ -75,10 +83,21 @@
         addColorValue: ''
 			}
 		},
+    components: {
+      draggable
+    },
+    computed: {
+      collectionToSave() {
+        return this.optionCollections.map(coll => {
+          coll.order = this.optionCollections.findIndex(c => c.collection_id == coll.collection_id) + 1;
+          console.log(coll);
+        });
+      }
+    },
     methods: {
       loadOption(res) {
         this.optionTitle = res.data.option.title;
-        this.optionCollections = res.data.option.collections;
+        this.optionCollections = res.data.option.collections.sort((a,b) => a.order - b.order);
         this.optionColors = res.data.option.colors;
         this.loading = false;
       },
@@ -89,7 +108,11 @@
         let collHandle = this.searchCollection.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/, '').replace(/^-/, '');
         try {
           let result = await axios.get(`https://${window.shopOrigin}/collections/${collHandle}.json`);
-          this.searchCollectionResult = {collection_id: result.data.collection.id, title: result.data.collection.title}
+          this.searchCollectionResult = {
+            collection_id: result.data.collection.id, 
+            title: result.data.collection.title,
+            order: this.optionCollections.length + 1
+          }
           this.hasResult = true;
           this.searchCollection = '';
           this.searchError = '';
@@ -124,12 +147,13 @@
         this.optionColors.splice(index, 1);
       },
       saveOption() {
+        console.log(this.collectionToSave);
         let data = {
           title: this.optionTitle,
-          collections: this.optionCollections,
+          collections: this.collectionToSave,
           colors: this.optionColors
         }
-        patchData(`/option/${this.$route.params.id}`, data, this.optionSaved);
+        // patchData(`/option/${this.$route.params.id}`, data, this.optionSaved);
       },
       optionSaved(res) {
         if (res.statusText == 'OK') {

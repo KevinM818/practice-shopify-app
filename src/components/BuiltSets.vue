@@ -1,6 +1,6 @@
 <template>
 	<div class="BuiltSets">
-		<h1>BuiltSets</h1>
+		<h1>Built Sets</h1>
 	</div>
 </template>
 

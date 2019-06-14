@@ -1,0 +1,128 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+a {
+	color: grey;
+	text-decoration: none;
+}
+
+a:hover {color: #000;}
+
+.Navigation a {
+	text-decoration: underline;
+	margin-right: 10px;
+}
+
+.Navigation a.router-link-exact-active {
+	color: #000;
+}
+
+.configInput label, .Options__addOption label, .titleInput label, .addColorInput label, .addColorInput label {
+	display: block;
+}
+.configInput input, .Options__addOption input, .titleInput input, .Option__addCollections input, .addColorInput input, .addColorInput input {
+	margin-bottom: 5px;
+	height: 30px;
+	width: 100%;
+	max-width: 350px;
+	padding: 5px;
+	border: 1px solid lightgrey;
+	border-radius: 2px;
+}
+
+.Options__addOption button, .Option__addCollections button {
+	height: 30px;
+}
+
+.Config button, .optSaveBtn {
+	width: 60px;
+	height: 36px;
+	color: #fff;
+	border: 0;
+	border-radius: 3px;
+	background: linear-gradient(to bottom, #6371c7, #5563c1);
+	margin: 20px 0; 
+}
+
+.savedNotification, .removedNotification {
+	position: fixed;
+  bottom: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  background-color: rgba(0,0,0,0.75);
+  font-size: 21px;
+  color: #fff;
+  font-weight: bold;
+  padding: 10px 21px;
+  text-transform: uppercase;
+  transition: bottom 0.3s;
+}
+
+.savedNotification.show, .removedNotification.show {
+	bottom: 35px;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	width: 100%;
+	max-width: 500px;
+}
+
+li {
+	background-color: #fff;
+	border: 1px solid grey;
+	border-bottom: 0;
+	padding: 7px 20px;
+	display: flex;
+	align-items: center;
+}
+
+li p {
+	margin-right: auto;
+}
+li button {
+	margin-left: 15px;
+}
+
+li:last-child {
+	border-bottom: 1px solid grey;
+}
+
+.addColor button {
+	height: 30px;
+}
+
+.Option__colors ul {
+	display: flex;
+	flex-flow: row wrap;
+	max-width: 100%;
+}
+
+.Option__colors ul li {
+	width: 17%;
+	border-bottom: 1px solid grey;
+	margin: 10px 10px 10px 0;
+	padding: 0 20px;
+}
+
+.Option__colors ul li span {
+	display: inline-block;
+	height: 40px;
+	width: 40px;
+	margin-right: auto; 
+}
+
+.Option__collections img {
+	display: block;
+	height: 20px;
+	width: 20px;
+	margin-right: 10px;
+	cursor: grab;
+}

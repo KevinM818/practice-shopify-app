@@ -14,7 +14,7 @@
         <h3>Add Option</h3>
         <label>Title</label>
         <input type="text" v-model="optionToAdd">
-        <button @click="addOption()">Save</button>
+        <button @click="addOption()">Add</button>
       </div>
     </div>
     <div class="savedNotification" :class="showSaved">Saved</div>

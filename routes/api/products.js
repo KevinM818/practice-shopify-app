@@ -31,6 +31,7 @@ router.get('/', async (req, res) => {
     savedOption.collections.forEach(coll => data.push({
       title: coll.title,
       collection_id: coll.collection_id,
+      order: coll.order,
       products: []
     }));
     products.forEach(prod => {
@@ -38,6 +39,7 @@ router.get('/', async (req, res) => {
       data[index].products.push(prod);
     });
     data.forEach(opt => opt.products = opt.products.slice(0,7));
+    data.sort((a,b) => a.order - b.order);
     allProducts.forEach(prod => {
       prod.tags.forEach(tag => {
         if (tag.indexOf('pattern_') > -1) {
