@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
       return res.status(404).send();
     }
     const options = shopOptions.map(opt => {return {
+      _id: opt._id,
       title: opt.title,
       collections: opt.collections
     }});

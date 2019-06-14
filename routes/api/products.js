@@ -20,11 +20,12 @@ router.get('/', async (req, res) => {
     }
     if (req.query.colors) {
       findObj.$or = [];
-      req.query.colors.split(',').forEach(col => findObj.$or.push({$elemMatch: {$regex: col, $options: 'i'}}));
+      req.query.colors.split(',').forEach(color => findObj.$or.push({
+        tags: {$elemMatch: {$regex: color, $options: 'i'}}
+      }));
     }
-    console.log(findObj);
     const allProducts = await Product.find({shopifyDomain, collection_ids: {$in: queryCollections}, publishedAt: {$ne: null}, inventory_quantity: {$gt: 0}}).exec();
-    const products = await Product.find(findObj).sort({created_at: 1}).exec();
+    const products = await Product.find(findObj).sort({created_at: -1}).exec();
     let filterArr = [];
     let data = [];
     savedOption.collections.forEach(coll => data.push({
@@ -66,10 +67,11 @@ router.get('/:id', async (req, res) => {
     }
     if (req.query.colors) {
       findObj.$or = [];
-      req.query.colors.split(',').forEach(col => findObj.$or.push({$elemMatch: {$regex: col, $options: 'i'}}));
+      req.query.colors.split(',').forEach(color => findObj.$or.push({
+        tags: {$elemMatch: {$regex: color, $options: 'i'}}
+      }));
     }
-    console.log(findObj);
-    const products = await Product.find(findObj).sort({created_at: 1}).skip((page - 1) * pageSize).limit(pageSize).exec();
+    const products = await Product.find(findObj).sort({created_at: -1}).skip((page - 1) * pageSize).limit(pageSize).exec();
     res.send({products});
   } catch(e) {
     console.log('Error getting collection GET', e);
