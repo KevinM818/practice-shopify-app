@@ -73,6 +73,17 @@
           <input type="number" v-model="editedConfig.discountPercentage">
         </div>
       </div>
+      <div class="Config__inputs">
+        <h3>Add Bag</h3>
+        <div class="configInput">
+          <label>Price ($)</label>
+          <input type="number" v-model="editedConfig.addBagPrice">
+        </div>
+        <div class="configInput">
+          <label>Text</label>
+          <input type="text" v-model="editedConfig.addBagText">
+        </div>
+      </div>
       <button @click="saveConfig()">Save</button>
     </div>
     <div class="savedNotification" :class="showSaved">Saved</div>

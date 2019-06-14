@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
           contents: req.body.contents,
           price: req.body.price,
           message: req.body.message,
-          blankMessage: req.body.blankMessage,
+          addBag: req.body.addBag,
           created: new Date(),
           orderConfirmed: false
         });

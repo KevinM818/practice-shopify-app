@@ -14,7 +14,7 @@ const BuiltSet = new mongoose.Schema({
 	contents: [Content],
 	price: String,
 	message: String,
-	blankMessage: Boolean,
+	addBag: Boolean,
 	created: Date,
 	orderConfirmed: Boolean,
 	orderCreated: Date

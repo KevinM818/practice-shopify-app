@@ -88,10 +88,13 @@
     },
     computed: {
       collectionToSave() {
-        return this.optionCollections.map(coll => {
-          coll.order = this.optionCollections.findIndex(c => c.collection_id == coll.collection_id) + 1;
-          console.log(coll);
-        });
+        let arr = [];
+        this.optionCollections.forEach(coll => arr.push({
+          collection_id: coll.collection_id,
+          title: coll.title,
+          order: this.optionCollections.findIndex(c => c.collection_id == coll.collection_id) + 1
+        }));
+        return arr;
       }
     },
     methods: {
@@ -153,7 +156,7 @@
           collections: this.collectionToSave,
           colors: this.optionColors
         }
-        // patchData(`/option/${this.$route.params.id}`, data, this.optionSaved);
+        patchData(`/option/${this.$route.params.id}`, data, this.optionSaved);
       },
       optionSaved(res) {
         if (res.statusText == 'OK') {
