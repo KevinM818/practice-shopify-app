@@ -106,7 +106,7 @@ li:last-child {
 }
 
 .Option__colors ul li {
-	width: 17%;
+	width: 300px;
 	border-bottom: 1px solid grey;
 	margin: 10px 10px 10px 0;
 	padding: 0 20px;
