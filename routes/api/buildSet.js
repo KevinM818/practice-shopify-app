@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    let sets = await BuildSet.find({shopifyDomain: req.query.shop}).exec();
+    let sets = await BuildSet.find({shopifyDomain: req.query.shop}).sort({created: -1}).exec();
     res.send({sets});
   } catch(e) {
     res.status(400).send('Error getting sets', e);

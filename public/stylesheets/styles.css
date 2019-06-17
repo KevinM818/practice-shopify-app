@@ -126,3 +126,15 @@ li:last-child {
 	margin-right: 10px;
 	cursor: grab;
 }
+
+.BuiltSets ul {
+	max-width: unset;
+}
+
+.infoLeft, .infoRight {
+	width: 50%;
+}
+
+.BuiltSets__set p {
+	margin: 0;
+}

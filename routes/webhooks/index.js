@@ -1,13 +1,16 @@
 const express = require('express');
 const {verifyWebhook} = require('./../../middleware/auth');
+const {productUpdate, orderCreate} = require('./../../helpers/webhooks');
 
 const router = express.Router();
 
 router.post('/', verifyWebhook, (req, res) => {
 	res.sendStatus(200);
-	console.log(req.shop);
-	console.log(req.topic);
-	console.log(req.body);
+	if (req.topic == 'products/update') {
+		productUpdate(req.body, req.shop);
+	} else if (req.topic == 'orders/create') {
+		orderCreate(req.body, req.shop);
+	}
 	
 	// app/uninstalled
 	
