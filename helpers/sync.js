@@ -36,7 +36,8 @@ const getProperties = (shopName, product) => {
 		price: product.variants[0].price,
 		publishedAt: product.published_at,
 		created_at: product.created_at,
-		inventory_quantity: product.variants[0].inventory_quantity
+		inventory_quantity: product.variants[0].inventory_quantity,
+		inventory_item_id: product.variants[0].inventory_item_id
 	};
 }
 

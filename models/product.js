@@ -12,7 +12,8 @@ const Product = new mongoose.Schema({
 	price: mongoose.Decimal128,
 	publishedAt: Date,
 	created_at: Date,
-	inventory_quantity: Number
+	inventory_quantity: Number,
+	inventory_item_id: Number
 });
 
 module.exports = mongoose.model('Product', Product);
