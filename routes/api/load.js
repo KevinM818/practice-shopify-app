@@ -19,10 +19,11 @@ router.get('/', async (req, res) => {
     let colors = {};
     shopOptions.forEach(opt => {
       opt.colors.forEach(color => {
-        if (colors.hasOwnProperty(color.title)) {
-          colors[color.title].collections.push(opt.title);
+        let colorVal = color.title.trim();
+        if (colors.hasOwnProperty(colorVal)) {
+          colors[colorVal].collections.push(opt.title);
         } else {
-          colors[color.title] = {
+          colors[colorVal] = {
             collections: [opt.title],
             value: color.value
           }
