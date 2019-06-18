@@ -1,19 +1,25 @@
 const express = require('express');
 const Product = require('./../../models/product');
 const Option = require('./../../models/option');
+const Collection = require('./../../models/collection');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
 	try {
     const shopifyDomain = req.query.shop;
+    let savedOption;
+    let queryCollections;
+    let getCollections;
     if (req.query.option == 'all_collections') {
-
+      savedOption = await Collection.find({shopifyDomain}).exec();
+      queryCollections = savedOption.map(coll => coll.collection_id);
+      getCollections = savedOption;
     } else {
-      
+      savedOption = await Option.findOne({shopifyDomain, _id: req.query.option}).exec();
+      queryCollections = savedOption.collections.map(coll => coll.collection_id);   
+      getCollections = savedOption.collections; 
     }
-    const savedOption = await Option.findOne({shopifyDomain, _id: req.query.option}).exec();
-    let queryCollections = savedOption.collections.map(coll => coll.collection_id);    
     let findObj = {
       shopifyDomain,
       collection_ids: {$in: queryCollections},
@@ -33,7 +39,7 @@ router.get('/', async (req, res) => {
     const products = await Product.find(findObj).sort({created_at: -1}).exec();
     let filterArr = [];
     let data = [];
-    savedOption.collections.forEach(coll => data.push({
+    getCollections.forEach(coll => data.push({
       title: coll.title,
       collection_id: coll.collection_id,
       order: coll.order,
