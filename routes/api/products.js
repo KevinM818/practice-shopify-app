@@ -7,6 +7,11 @@ const router = express.Router();
 router.get('/', async (req, res) => {
 	try {
     const shopifyDomain = req.query.shop;
+    if (req.query.option == 'all_collections') {
+
+    } else {
+      
+    }
     const savedOption = await Option.findOne({shopifyDomain, _id: req.query.option}).exec();
     let queryCollections = savedOption.collections.map(coll => coll.collection_id);    
     let findObj = {

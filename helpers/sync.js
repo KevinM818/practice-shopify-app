@@ -44,5 +44,6 @@ const getProperties = (shopName, product) => {
 // TODO: Write a function to index the collections for an indivual product for product update and create webhooks.
 
 module.exports = {
-	fetchProducts
+	fetchProducts,
+	getProperties
 }

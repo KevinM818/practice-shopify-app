@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Content = new mongoose.Schema({
 	title: String,
-	variant_id: Number,
+	inventory_item_id: Number,
 	quantity: Number
 })
 

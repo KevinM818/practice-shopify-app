@@ -3,11 +3,12 @@ const Product = require('./../models/product');
 const Collection = require('./../models/collection');
 const BuildSet = require('./../models/builtSet');
 const {openSession} = require('./index');
+const {getProperties} = require('./sync');
 
-const productUpdate = (product, shopName) => {
-	console.log('PRODUCT UPDATE');
-	console.log(shopName);
-	console.log(product);
+const productUpdate = async (product, shopifyDomain) => {
+	try {
+		await Product.findOneAndUpdate({shopifyDomain, product_id: product.id}, {$set: getProperties(shopifyDomain, product)});
+	} catch(e) {console.log('Error updating product', e);}
 }
 
 const orderCreate = async (items, shopifyDomain) => {
@@ -41,12 +42,18 @@ const deleteSets = (ids, shopifyDomain, shop) => {
 	});
 }
 
-const updateProductInventory = (items, locationId, shop) => {
+const updateProductInventory = (items, location_id, shop) => {
 	if (items.length <= 0) {return;}
-	let id = items.pop();
-
-	console.log(locationId);
-	console.log(items);
+	let item = items.pop();
+	let postData = {
+		location_id,
+		inventory_item_id: item.id,
+		available_adjustment: item.quantity * -1
+	};
+	shop.post('/admin/api/2019-04/inventory_levels/adjust.json', postData, (err, data, headers) => {
+		if (err) {return console.log('Error updating inventory');}
+		updateProductInventory(items, location_id, shop);
+	});
 }
 
 
