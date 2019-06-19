@@ -42,13 +42,9 @@ router.get('/', async (req, res) => {
     getCollections.forEach(coll => data.push({
       title: coll.title,
       collection_id: coll.collection_id,
-      order: coll.order,
-      products: []
+      order: req.query.option == 'all_collections' ? getAllCollectionsOrder(coll.title) : coll.order,
+      products: products.filter(p => p.collection_ids.indexOf(coll.collection_id) > -1)
     }));
-    products.forEach(prod => {
-      let index = data.indexOf(data.find(d => prod.collection_ids.indexOf(d.collection_id) > -1));
-      data[index].products.push(prod);
-    });
     data.forEach(opt => opt.products = opt.products.slice(0,7));
     data.sort((a,b) => a.order - b.order);
     allProducts.forEach(prod => {
@@ -91,5 +87,29 @@ router.get('/:id', async (req, res) => {
     res.status(400).send(e);
   }
 });
+
+const getAllCollectionsOrder = title => {
+  let order;
+  switch (title) {
+    case 'Boy Newborn Sets':
+      order = 1;
+      break;
+    case 'Girl Newborn Sets':
+      order = 2;
+      break;
+    case 'Gowns':
+      order = 3;
+      break;
+    case 'Swaddle Blankets':
+      order = 4;
+      break;
+    case 'Sibling Shirts and Sets':
+      order = 5;
+      break;
+    default:
+      order = 999;
+  }
+  return order;
+}
 
 module.exports = router;
