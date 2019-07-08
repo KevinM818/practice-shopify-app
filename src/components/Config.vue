@@ -54,6 +54,10 @@
           <label>Title</label>
           <input type="text" v-model="editedConfig.stepThreeText">
         </div>
+        <div class="configInput">
+          <label>Textarea place holder</label>
+          <input type="text" v-model="editedConfig.textareaPlaceholder">
+        </div>
       </div>
       <div class="Config__inputs">
         <h3>Confirm</h3>

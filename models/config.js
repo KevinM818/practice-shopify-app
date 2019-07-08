@@ -11,6 +11,7 @@ const Config = new mongoose.Schema({
 	stepOneTitle: {type: String, default: 'Select option and colors'},
 	stepTwoTitle: {type: String, default: 'Select items'},
 	stepThreeTitle: {type: String, default: 'Add message'},
+	textareaPlaceholder: {type: String, default: 'Don\'t forget to write your name...'},
 	confirmTitle: {type: String, default: 'Confirm'},
 	stepOneText: {type: String, default: 'Create a set'},
 	stepTwoText: {type: String, default: 'Select from these items'},
