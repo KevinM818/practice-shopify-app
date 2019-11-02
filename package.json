@@ -18,7 +18,7 @@
     "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "mongoose": "^5.4.17",
+    "mongoose": "^5.7.5",
     "nonce": "^1.0.4",
     "shopify-node-api": "^1.10.0",
     "vue": "^2.6.8",
